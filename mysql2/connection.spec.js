@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
-describe('Name of the group', () => {
-    it('should behave...', async () => {
+describe('Simple database connection without connection pool', () => {
+    it('should do a plain select', async () => {
         let songs = await findAllSongs();
         expect(songs[0].title).toEqual("Photographs");
         expect(songs[0].price).toEqual(10);
