@@ -1,23 +1,18 @@
 const mysql = require('mysql2/promise');
 describe('Simple database connection without connection pool', () => {
-    it('should do a plain select', async () => {
-        let songs = await findAllSongs();
+    it('should do a plain select', async (done) => {
+        let [songs] = await runWithinConnection('select * from Song');
         expect(songs[0].title).toEqual("Photographs");
         expect(songs[0].price).toEqual(10);
+        done();
     });
 });
 
-async function findAllSongs () {
-    const [rows] = await runWithinConnection('select * from Song');
-    return rows;
-}
-
 async function runWithinConnection(query) {
     const connection = await getConnection();
-    let result =  connection.query(query);
-    closeConnection(connection);
+    let result = connection.query(query);
+    connection.end();
     return result;
-    
 }
 
 function getConnection() {
@@ -29,9 +24,3 @@ function getConnection() {
         socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
     });
 }
-
-function closeConnection(connection) {
-    connection.end();
-}
-
-module.exports = {findAllSongs};
